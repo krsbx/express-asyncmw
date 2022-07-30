@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
-// eslint-disable-next-line import/no-unresolved
-import { Request, Response, NextFunction, Errback, RequestHandler } from 'express';
+import type { Request, Response, NextFunction, Errback, RequestHandler } from 'express';
 
 const promiseMw = (fn: Function, ...rest: (Errback | Request | Response | NextFunction)[]) => {
   const nextFn = rest[rest.length - 1];
@@ -34,4 +32,4 @@ const asyncMw = (...mws: RequestHandler[]) => {
   return mws.map(mwWrapper);
 };
 
-export default asyncMw;
+export = asyncMw;

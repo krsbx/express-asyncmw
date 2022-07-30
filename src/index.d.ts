@@ -11,8 +11,7 @@ declare namespace Express {
 }
 
 declare module 'express-asyncmw' {
-  // eslint-disable-next-line import/no-unresolved
-  import { RequestHandler, ErrorRequestHandler } from 'express';
+  import type { RequestHandler, ErrorRequestHandler } from 'express';
 
   function asyncMw(...mws: RequestHandler[]): (ErrorRequestHandler | RequestHandler)[];
 

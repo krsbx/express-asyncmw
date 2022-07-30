@@ -22,6 +22,7 @@ module.exports = {
     'import/extensions': 'off',
     'import/prefer-default-export': 'off',
     'no-console': 'off',
+    '@typescript-eslint/ban-types': 'off',
   },
   settings: {},
 };
