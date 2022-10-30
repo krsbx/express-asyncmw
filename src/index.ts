@@ -59,6 +59,4 @@ export const errorAsyncMw = (...mws: ErrorRequestHandler[]) => {
   return mws.map(mwWrapper);
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export = asyncMw;
+export default asyncMw;
