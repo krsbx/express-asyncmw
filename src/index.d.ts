@@ -1,19 +1,28 @@
-declare namespace Express {
-  interface Request {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string | number | symbol]: any;
-  }
+import type {
+  Errback,
+  ErrorRequestHandler,
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 
-  interface Response {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string | number | symbol]: any;
-  }
-}
+export * from './express-mod';
 
-declare module 'express-asyncmw' {
-  import type { RequestHandler, ErrorRequestHandler } from 'express';
+export declare const asyncMw: (
+  ...mws: RequestHandler[]
+) => (
+  | ((req: Request, res: Response, next: NextFunction) => void)
+  | ((err: Errback, req: Request, res: Response, next: NextFunction) => void)
+)[];
 
-  function asyncMw(...mws: RequestHandler[]): (ErrorRequestHandler | RequestHandler)[];
+export declare const errorAsyncMw: (
+  ...mws: ErrorRequestHandler[]
+) => (
+  | ((req: Request, res: Response, next: NextFunction) => void)
+  | ((err: Errback, req: Request, res: Response, next: NextFunction) => void)
+)[];
 
-  export = asyncMw;
-}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export = asyncMw;

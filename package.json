@@ -1,12 +1,12 @@
 {
   "name": "express-asyncmw",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Async handler for express.js",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist/",
     "build": "tsc",
-    "postbuild": "copyfiles -u 1 src/index.d.ts dist/",
+    "postbuild": "copyfiles -u 1 src/*.d.ts dist/",
     "prepare": "husky install"
   },
   "repository": {
