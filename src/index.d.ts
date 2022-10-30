@@ -22,7 +22,3 @@ export declare const errorAsyncMw: (
   | ((req: Request, res: Response, next: NextFunction) => void)
   | ((err: Errback, req: Request, res: Response, next: NextFunction) => void)
 )[];
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export = asyncMw;
