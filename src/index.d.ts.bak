@@ -1,7 +1,19 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
 import type { ParamsDictionary, Query } from 'express-serve-static-core';
 
-export * from './express-mod';
+declare global {
+  namespace Express {
+    interface Request {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string | number | symbol]: any;
+    }
+
+    interface Response {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string | number | symbol]: any;
+    }
+  }
+}
 
 export declare const asyncMw: <
   Params = ParamsDictionary,
@@ -24,3 +36,5 @@ export declare const errorAsyncMw: <
 >(
   ...mws: Parameter[]
 ) => Parameter[];
+
+export default asyncMw;
