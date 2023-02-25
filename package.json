@@ -1,6 +1,6 @@
 {
   "name": "express-asyncmw",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Async handler for express.js",
   "main": "dist/index.js",
   "scripts": {
