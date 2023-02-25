@@ -32,7 +32,7 @@ type AsyncParam = {
 type ReqObj<T extends AsyncParam, DefaultQuery = Query & Record<any, any>> = Request<
   T['params'] extends NonNullable<T['params']> ? T['params'] : ParamsDictionary,
   T['resBody'] extends NonNullable<T['resBody']> ? T['resBody'] : any,
-  T['reqBody'] extends NonNullable<T['resBody']> ? T['reqBody'] : any,
+  T['reqBody'] extends NonNullable<T['reqBody']> ? T['reqBody'] : any,
   T['reqQuery'] extends NonNullable<T['reqQuery']> ? T['reqQuery'] & DefaultQuery : DefaultQuery,
   T['locals'] extends NonNullable<T['locals']>
     ? T['locals'] & Record<string, any>
