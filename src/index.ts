@@ -108,7 +108,7 @@ export const asyncMw = <
   // Change to array if the request is not an array
   if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
 
-  return mws.map(mwWrapper) as Returns[];
+  return mws.map(mwWrapper) as RequestHandler[];
 };
 
 export const errorAsyncMw = <
@@ -121,7 +121,7 @@ export const errorAsyncMw = <
   // Change to array if the request is not an array
   if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
 
-  return mws.map(mwWrapper) as Returns[];
+  return mws.map(mwWrapper) as ErrorRequestHandler[];
 };
 
 export default asyncMw;
