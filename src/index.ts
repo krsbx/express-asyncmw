@@ -9,23 +9,46 @@ import type {
 import type { ParamsDictionary, Query } from 'express-serve-static-core';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
-    // eslint-disable-next-line no-shadow
     interface Request {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key: string | number | symbol]: any;
     }
 
-    // eslint-disable-next-line no-shadow
     interface Response {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key: string | number | symbol]: any;
     }
   }
 }
 
-export {};
+type AsyncParam = {
+  params?: ParamsDictionary;
+  resBody?: unknown;
+  reqBody?: unknown;
+  locals?: Record<string, any>;
+  reqQuery?: unknown;
+  extends?: unknown;
+};
+
+type ReqObj<T extends AsyncParam, DefaultQuery = Query & Record<any, any>> = Request<
+  T['params'] extends NonNullable<T['params']> ? T['params'] : ParamsDictionary,
+  T['resBody'] extends NonNullable<T['resBody']> ? T['resBody'] : any,
+  T['reqBody'] extends NonNullable<T['resBody']> ? T['reqBody'] : any,
+  T['reqQuery'] extends NonNullable<T['reqQuery']> ? T['reqQuery'] & DefaultQuery : DefaultQuery,
+  T['locals'] extends NonNullable<T['locals']>
+    ? T['locals'] & Record<string, any>
+    : Record<string, any>
+>;
+
+type ResObj<T extends AsyncParam> = Response<
+  T['resBody'] extends NonNullable<T['resBody']> ? T['resBody'] : any,
+  T['locals'] extends NonNullable<T['locals']>
+    ? T['locals'] & Record<string, any>
+    : Record<string, any>
+>;
+
+type ExtendReq<T extends AsyncParam, U> = T['extends'] extends NonNullable<T['extends']>
+  ? T['extends'] & U
+  : U;
 
 const promiseStandardMw = (fn: RequestHandler, req: Request, res: Response, next: NextFunction) => {
   Promise.resolve(fn(req, res, next)).catch((err) => {
@@ -76,35 +99,29 @@ const mwWrapper = <
 };
 
 export const asyncMw = <
-  Params = ParamsDictionary,
-  ResBody = any,
-  ReqBody = any,
-  LocalsObj extends Record<string, any> = Record<string, any>,
-  ReqQuery = any,
-  Parameter = RequestHandler<Params, ResBody, ReqBody, ReqQuery, LocalsObj>
+  T extends AsyncParam = {},
+  ExtendedReq = ExtendReq<T, ReqObj<T>>,
+  Returns = (req: ExtendedReq, res: ResObj<T>, next: NextFunction) => void
 >(
-  ...mws: Parameter[]
+  ...mws: Returns[]
 ) => {
   // Change to array if the request is not an array
   if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
 
-  return mws.map(mwWrapper) as Parameter[];
+  return mws.map(mwWrapper) as Returns[];
 };
 
 export const errorAsyncMw = <
-  Params = ParamsDictionary,
-  ResBody = any,
-  ReqBody = any,
-  LocalsObj extends Record<string, any> = Record<string, any>,
-  ReqQuery = Query,
-  Parameter = ErrorRequestHandler<Params, ResBody, ReqBody, ReqQuery, LocalsObj>
+  T extends AsyncParam = {},
+  ExtendedReq = ExtendReq<T, ReqObj<T>>,
+  Returns = (err: any, req: ExtendedReq, res: ResObj<T>, next: NextFunction) => void
 >(
-  ...mws: Parameter[]
+  ...mws: Returns[]
 ) => {
   // Change to array if the request is not an array
   if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
 
-  return mws.map(mwWrapper) as Parameter[];
+  return mws.map(mwWrapper) as Returns[];
 };
 
 export default asyncMw;
