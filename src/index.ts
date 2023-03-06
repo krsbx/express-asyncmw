@@ -10,10 +10,12 @@ import type { ParamsDictionary, Query } from 'express-serve-static-core';
 
 declare global {
   namespace Express {
+    // eslint-disable-next-line no-shadow
     interface Request {
       [key: string | number | symbol]: any;
     }
 
+    // eslint-disable-next-line no-shadow
     interface Response {
       [key: string | number | symbol]: any;
     }
@@ -73,6 +75,10 @@ const promiseErrorMw = (
   });
 };
 
+const noErrorHandlingMw =
+  (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
+    fn(req, res, next);
+
 const standardMw = (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
   promiseStandardMw(fn, req, res, next);
 
@@ -104,6 +110,15 @@ export const errorAsyncMw = <T extends AsyncParam = {}>(
   if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
 
   return mws.map(mwWrapper) as ErrorRequestHandler[];
+};
+
+export const wrapperMw = <T extends AsyncParam = {}>(
+  ...mws: ((req: ExtendReq<T, ReqObj<T>>, res: ResObj<T>, next: NextFunction) => void)[]
+) => {
+  // Change to array if the request is not an array
+  if (!Array.isArray(mws)) mws = [mws]; // eslint-disable-line no-param-reassign
+
+  return mws.map(noErrorHandlingMw);
 };
 
 export default asyncMw;
